@@ -6,7 +6,9 @@ const cors = require('cors');
 const PORT = process.env.SERVER_PORT
 const password = process.env.ATLAS_PASS
 const routes = require('./Routes/Routes');
+const helmet = require ("helmet");
 
+server.use(helmet)
 server.use( bodyParser.json() ); // This solves getting the body of the request
 server.use( cors() ); // Solves communication by other software
 server.use( '' , routes )
