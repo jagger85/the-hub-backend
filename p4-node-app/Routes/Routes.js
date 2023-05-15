@@ -16,8 +16,9 @@ router.get('/user/:username', (req, res)=>{
 })
 
 //Get User portfolios
-router.get('/', (req, res)=>{
+router.get('/user/:username/portfolios', (req, res)=>{
     try{
+        
 
     }catch(e){
         throw e
@@ -51,8 +52,28 @@ router.get('/', (req, res)=>{
     }
 })
 //Create User
+router.post('/user/:username/', (req, res)=>{
+    //TODO check if user exist
+    try{
+    const user = new User({username : req.params.username, email: req.body.email, password: req.body.password})
+    user.save().then(data => {
+        res.status(201).send(data)
+    })
+    }catch(e){
+        throw e
+    }
+})
 
-//Create Portfolio
+//Add Portfolio to user
+
+router.put('/user/:username/portfolios/:portfolio', (req, res)=>{
+    //TODO check if portfolio exist
+    try{
+
+    }catch(e){
+        throw e
+    }
+})
 
 //Create Wallet
 
