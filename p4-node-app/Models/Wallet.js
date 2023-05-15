@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const wallet = new Schema({
-    Alias: String,
-    Address: String
+    alias: String,
+    address: String
 })
 
 module.exports = mongoose.model('Wallet', wallet);
