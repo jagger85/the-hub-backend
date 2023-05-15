@@ -7,7 +7,7 @@ const Wallet = require("../Models/Wallet");
 //Get User
 router.get('/user/:username', (req, res)=>{
     try{
-        User.find({username: req.params.username}).then(data =>{
+        User.findOne({username: req.params.username}).then(data =>{
           res.status(200).send({user: data})
         })
     }catch(e){
@@ -18,21 +18,26 @@ router.get('/user/:username', (req, res)=>{
 //Get User portfolios
 router.get('/user/:username/portfolios', (req, res)=>{
     try{
-        
-
+        console.log(req.params.username)
+        User.findOne({username: req.params.username}).then(data =>{
+            res.status(200).send({portfolios: data.portfolios})
+          })
     }catch(e){
         throw e
     }
 })
 
 //Get User portfolio
-router.get('/', (req, res)=>{
+router.get('/user/portfolios/:username', (req, res)=>{
     try{
-
+        User.find({username: req.params.username}).then(data =>{
+          res.status(200).send({user: data})
+        })
     }catch(e){
         throw e
     }
 })
+
 
 //Get portfolio wallets
 router.get('/', (req, res)=>{
@@ -55,8 +60,8 @@ router.get('/', (req, res)=>{
 router.post('/user/:username/', (req, res)=>{
     //TODO check if user exist
     try{
-    const user = new User({username : req.params.username, email: req.body.email, password: req.body.password})
-    user.save().then(data => {
+        const user = new User({username : req.params.username, email: req.body.email, password: req.body.password})
+        user.save().then(data => {
         res.status(201).send(data)
     })
     }catch(e){
@@ -65,10 +70,20 @@ router.post('/user/:username/', (req, res)=>{
 })
 
 //Add Portfolio to user
+router.post('/user/portfolios/:username', (req, res)=>{
 
-router.put('/user/:username/portfolios/:portfolio', (req, res)=>{
-    //TODO check if portfolio exist
+    /**
+     * @TODO I should check if the user exist first I guess  🤷‍♂️
+     */
+
     try{
+        const portfolio = new Portfolio({alias : req.body.alias})
+        portfolio.save()
+
+        User.findOne({username: req.params.username}).then(data => {
+           data.portfolios.push(portfolio)
+           data.save().then(data => res.send(data))
+        })
 
     }catch(e){
         throw e
