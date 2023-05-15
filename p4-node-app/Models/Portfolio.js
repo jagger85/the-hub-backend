@@ -3,7 +3,10 @@ const { Schema } = mongoose;
 
 
 const portfolio = new Schema({
-    alias: String,
+    alias: {
+        type: String,
+        required: true,
+    },
     wallets:[{type: mongoose.Schema.Types.ObjectId,ref:'Wallet'}]
 })
 
