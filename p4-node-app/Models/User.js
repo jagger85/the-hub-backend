@@ -50,7 +50,20 @@ const user = new Schema({
         currency:  String
     },
 
-    portfolios: [portfolio]
+    portfolios: [portfolio],
+
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
+})
+
+user.pre('find',function() {
+    this.where({ isDeleted: false });
+})
+
+user.pre('findOne',function() {
+    this.where({ isDeleted: false });
 })
 
 module.exports = mongoose.model('User', user);
