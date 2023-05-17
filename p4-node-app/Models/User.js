@@ -1,6 +1,27 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const wallet = new Schema({
+    alias: {
+        type: String,
+        required: true,
+    },
+    address: {
+        type: String,
+        required: true,
+    },
+})
+
+const portfolio = new Schema({
+    alias: {
+        type: String,
+        required: true,
+    },
+    wallets:[wallet]
+})
+
+
+
 const user = new Schema({
 
     username: {
@@ -29,12 +50,7 @@ const user = new Schema({
         currency:  String
     },
 
-    portfolios: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref:'Portfolio'
-        }
-    ]
+    portfolios: [portfolio]
 })
 
 module.exports = mongoose.model('User', user);
