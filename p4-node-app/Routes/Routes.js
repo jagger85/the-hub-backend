@@ -138,9 +138,14 @@ router.delete('/user/portfolios/:username', (req, res) => {
 });
 
 //Delete Wallet
-router.delete('/user/portfolios/:username', (req, res) => {
-
+router.delete('/user/portfolios/wallets/:username', (req, res) => {
   try {
+    User.findOne({username: req.params.username})
+    .then(user =>{
+      portfolio = user.portfolios.filter( e => e.alias == req.body.alias)
+      portfolio[0].wallets = portfolio[0].wallets.filter( e => e.alias != req.body.walletAlias)
+      user.save().then( user => res.status(200).send(user))
+    })
   } catch (e) {
     throw e;
   }
