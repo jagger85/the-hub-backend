@@ -13,6 +13,17 @@ router.get('/user/:username', (req, res) => {
   }
 });
 
+//Get all users
+router.get('/user/', (req, res) => {
+  try {
+    User.find({}).then((users) => {
+      res.status(200).send({ users: users });
+    });
+  } catch (e) {
+    throw e;
+  }
+});
+
 //Get User portfolios
 router.get('/user/portfolios/:username', (req, res) => {
   try {
@@ -60,10 +71,10 @@ router.get('/user/:username/:portfolioname/:walletname', (req, res) => {
 });
 
 //Create User
-router.post('/user/:username/', (req, res) => {
+router.post('/user/', (req, res) => {
   //TODO check if user exist
   try {
-    const user = new User({ username: req.params.username, email: req.body.email, password: req.body.password });
+    const user = new User({ username: req.body.username, email: req.body.email, password: req.body.password });
     user.save().then((data) => {
       res.status(201).send(data);
     });
@@ -74,9 +85,6 @@ router.post('/user/:username/', (req, res) => {
 
 //Add Portfolio to user
 router.post('/user/portfolios/:username', (req, res) => {
-  /**
-   * @TODO I should check if the user exist first I guess  🤷‍♂️
-   */
 
   try {
     User.findOne({ username: req.params.username }).then((user) => {
@@ -90,9 +98,6 @@ router.post('/user/portfolios/:username', (req, res) => {
 
 //Add wallet to portfolio
 router.post('/user/portfolios/wallets/:username', (req, res) => {
-  /**
-   * @TODO I should check if the user exist first I guess  🤷‍♂️
-   */
 
   try {
     User.findOne({ username: req.params.username }).then((user) => {
@@ -110,7 +115,15 @@ router.post('/user/portfolios/wallets/:username', (req, res) => {
 //Update password
 
 //Delete User
-
+router.delete('/user/:username', (req, res)=>{
+  User.findOne({username: req.params.username})
+  .then( user => {
+      user.isDeleted = true
+      user.save().then(
+        data => res.status(200).send({message: `User ${req.params.username} is deleted`, data: data})
+      )
+    })
+})
 //Delete Portfolio
 router.delete('/user/portfolios/:username', (req, res) => {
 
