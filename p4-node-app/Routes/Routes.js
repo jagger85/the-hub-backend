@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../Models/User');
+const bcrypt = require('bcrypt')
 
 //Get User
 router.get('/user/:username', (req, res) => {
@@ -72,10 +73,12 @@ router.get('/user/:username/:portfolioname/:walletname', (req, res) => {
 //Create User
 router.post('/user/', (req, res) => {
   try {
-    const user = new User({ username: req.body.username, email: req.body.email, password: req.body.password });
-    user.save().then((data) => {
-      res.status(201).send(data);
-    });
+    bcrypt.hash(req.body.password , 10).then( hash => {
+      const user = new User({ username: req.body.username, email: req.body.email, password: hash });
+      user.save().then((data) => {
+        res.status(201).send(data);
+      });
+    })
   } catch (e) {
     throw e;
   }
@@ -142,5 +145,18 @@ router.delete('/user/portfolios/wallets/:username', (req, res) => {
     throw e;
   }
 });
+
+//Log User
+router.post('/login/',(req, response)=>{
+  User.findOne({username: req.body.username,}).then(res =>{
+    bcrypt.compare(req.body.password, res.password).then(isValid =>{
+      if(!isValid){
+        response.status(404).send({error: 'Invalid credentials'})
+      }else{
+        response.status(200).send({message: 'Login success!'})
+      }
+    })
+  })
+})
 
 module.exports = router;
