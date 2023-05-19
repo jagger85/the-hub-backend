@@ -177,7 +177,3 @@ router.post('/login', (req, response) => {
 
 module.exports = router;
 
-
-/**
- * eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjZmMzNkYmEyOWE3ZjQ0MTA5MTU2ZCIsImVtYWlsIjoiYW5lbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2ODQ0OTE1NTN9.LWDOP8xy9NoVZ8ilGJsYEco8q4JbJo0Ih1RBs41p0Ao
- */
