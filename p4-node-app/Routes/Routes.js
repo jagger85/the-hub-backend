@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const User = require('../Models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
+const SECRET = process.env.TOKEN_SECRET
+const { verify } = require('../middlewares/auth')
+
 
 //Get User
 router.get('/user/:username', (req, res) => {
@@ -15,7 +20,7 @@ router.get('/user/:username', (req, res) => {
 });
 
 //Get all users
-router.get('/user/', (req, res) => {
+router.get('/user/' ,(req, res) => {
   try {
     User.find({}).then((users) => {
       res.status(200).send({ users: users });
@@ -26,7 +31,7 @@ router.get('/user/', (req, res) => {
 });
 
 //Get User portfolios
-router.get('/user/portfolios/:username', (req, res) => {
+router.get('/user/portfolios/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       res.status(200).send({ portfolios: user.portfolios });
@@ -37,7 +42,7 @@ router.get('/user/portfolios/:username', (req, res) => {
 });
 
 //Get User portfolio
-router.get('/user/:username/:portfolioname', (req, res) => {
+router.get('/user/:username/:portfolioname', verify, (req, res) => {
   User.findOne({ username: req.params.username }).then((user) => {
     portfolio = user.portfolios.filter((e) => e.alias == req.params.portfolioname);
     res.send({ portfolio: portfolio[0] });
@@ -45,7 +50,7 @@ router.get('/user/:username/:portfolioname', (req, res) => {
 });
 
 //Get portfolio wallets
-router.get('/user/:username/:portfolioname/wallets', (req, res) => {
+router.get('/user/:username/:portfolioname/wallets', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       portfolio = user.portfolios.filter((e) => e.alias == req.params.portfolioname);
@@ -58,7 +63,7 @@ router.get('/user/:username/:portfolioname/wallets', (req, res) => {
 });
 
 //Get wallet
-router.get('/user/:username/:portfolioname/:walletname', (req, res) => {
+router.get('/user/:username/:portfolioname/:walletname', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       portfolio = user.portfolios.filter((e) => e.alias == req.params.portfolioname);
@@ -74,8 +79,6 @@ router.get('/user/:username/:portfolioname/:walletname', (req, res) => {
 router.post('/register', (req, res) => {
   try {
     User.find({ $or: [{ email: req.body.email }, { username: req.body.username }] }).then( dbres => {
-      console.log('hola')
-      console.log(dbres)
       if (dbres.length > 0) {
         res.status(400).send({ error: 'Username and email should be unique' });
       } else {
@@ -93,7 +96,7 @@ router.post('/register', (req, res) => {
 });
 
 //Add Portfolio to user
-router.post('/user/portfolios/:username', (req, res) => {
+router.post('/user/portfolios/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       user.portfolios.push({ alias: req.body.alias });
@@ -105,7 +108,7 @@ router.post('/user/portfolios/:username', (req, res) => {
 });
 
 //Add wallet to portfolio
-router.post('/user/portfolios/wallets/:username', (req, res) => {
+router.post('/user/portfolios/wallets/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       portfolio = user.portfolios.filter((e) => e.alias == req.body.alias);
@@ -129,7 +132,7 @@ router.delete('/user/:username', (req, res) => {
   });
 });
 //Delete Portfolio
-router.delete('/user/portfolios/:username', (req, res) => {
+router.delete('/user/portfolios/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       user.portfolios = user.portfolios.filter((e) => e.alias != req.body.alias);
@@ -142,7 +145,7 @@ router.delete('/user/portfolios/:username', (req, res) => {
 });
 
 //Delete Wallet
-router.delete('/user/portfolios/wallets/:username', (req, res) => {
+router.delete('/user/portfolios/wallets/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       portfolio = user.portfolios.filter((e) => e.alias == req.body.alias);
@@ -156,15 +159,16 @@ router.delete('/user/portfolios/wallets/:username', (req, res) => {
 
 //Log User
 router.post('/login', (req, response) => {
-  User.findOne({ username: req.body.username }).then((res) => {
-    if(!res){
+  User.findOne({ username: req.body.username }).then((dbres) => {
+    if(!dbres){
       response.status(404).send({error: 'User not found'})
     }else{
-      bcrypt.compare(req.body.password, res.password).then((isValid) => {
+      bcrypt.compare(req.body.password, dbres.password).then((isValid) => {
         if (!isValid) {
           response.status(404).send({ error: 'Invalid credentials' });
         } else {
-          response.status(200).send({ message: 'Login success!' });
+          const token = jwt.sign({id: dbres._id, email: dbres.email}, SECRET )
+          response.status(200).send({ message: 'Login success!', token: token});
         }
       });
     }
@@ -172,3 +176,8 @@ router.post('/login', (req, response) => {
 });
 
 module.exports = router;
+
+
+/**
+ * eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjZmMzNkYmEyOWE3ZjQ0MTA5MTU2ZCIsImVtYWlsIjoiYW5lbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2ODQ0OTE1NTN9.LWDOP8xy9NoVZ8ilGJsYEco8q4JbJo0Ih1RBs41p0Ao
+ */
