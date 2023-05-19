@@ -54,7 +54,6 @@ router.get('/user/:username/:portfolioname/wallets', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       portfolio = user.portfolios.filter((e) => e.alias == req.params.portfolioname);
-      console.log(portfolio[0].wallets);
       res.send({ wallets: portfolio[0].wallets });
     });
   } catch (e) {
@@ -136,7 +135,6 @@ router.delete('/user/portfolios/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       user.portfolios = user.portfolios.filter((e) => e.alias != req.body.alias);
-      console.log('hello');
       user.save().then((data) => res.send(data));
     });
   } catch (e) {
