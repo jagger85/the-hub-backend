@@ -159,11 +159,11 @@ router.delete('/user/portfolios/wallets/:username', verify, (req, res) => {
 router.post('/login', (req, response) => {
   User.findOne({ username: req.body.username }).then((dbres) => {
     if(!dbres){
-      response.status(404).send({error: 'User not found'})
+      response.status(204).send({error: 'User not found'})
     }else{
       bcrypt.compare(req.body.password, dbres.password).then((isValid) => {
         if (!isValid) {
-          response.status(404).send({ error: 'Invalid credentials' });
+          response.status(204).send({ error: 'Invalid credentials' });
         } else {
           const token = jwt.sign({id: dbres._id, email: dbres.email}, SECRET )
           response.status(200).send({ message: 'Login success!', token: token});
