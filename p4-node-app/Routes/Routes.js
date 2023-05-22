@@ -198,7 +198,8 @@ router.post('/settings/portfolio/:username',verify, (req, res) => {
 router.get('/settings/portfolio/:username', verify, (req, res) =>{
   try{
     User.findOne({username: req.params.username}).then( user => {
-      res.status(200).send(user.preferredPortfolio)
+      const portfolio = user.portfolios.filter( x => x.alias == user.preferredPortfolio)
+      res.status(200).send(portfolio[0])
     })
   }catch (e) {
     throw e
