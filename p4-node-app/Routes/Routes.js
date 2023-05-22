@@ -182,4 +182,50 @@ router.post('/login', (req, response) => {
   });
 });
 
+//Set preferred portfolio
+router.post('/settings/portfolio/:username',verify, (req, res) => {
+  try{
+    User.findOne({username: req.params.username}).then( user => {
+    user.preferredPortfolio = req.body.preferredPortfolio
+    user.save().then(user => res.status(200).send(user))
+    })
+  }catch (e) {
+    throw e
+  }
+})
+
+//Get preferred portfolio
+router.get('/settings/portfolio/:username', verify, (req, res) =>{
+  try{
+    User.findOne({username: req.params.username}).then( user => {
+      res.status(200).send(user.preferredPortfolio)
+    })
+  }catch (e) {
+    throw e
+  }
+})
+
+
+//Set preferred currency
+router.post('/settings/currency/:username',verify, (req, res) => {
+  try{
+    User.findOne({username: req.params.username}).then( user => {
+    user.currency = req.body.currency
+    user.save().then(user => res.status(200).send(user))
+    })
+  }catch (e) {
+    throw e
+  }
+})
+
+//Get preferred currency
+router.get('/settings/currency/:username', verify, (req, res) =>{
+  try{
+    User.findOne({username: req.params.username}).then( user => {
+      res.status(200).send(user.currency)
+    })
+  }catch (e) {
+    throw e
+  }
+})
 module.exports = router;
