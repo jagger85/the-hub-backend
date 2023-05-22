@@ -98,8 +98,12 @@ router.post('/register', (req, res) => {
 router.post('/user/portfolios/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
-      user.portfolios.push({ alias: req.body.alias });
-      user.save().then((data) => res.send(data));
+      if(user.portfolios.every(x => x.alias != req.body.alias)){
+        user.portfolios.push({ alias: req.body.alias });
+        user.save().then((data) => res.send(data));
+      }else{
+        res.status(200).send({error: 'Portfolio already exist'})
+      }
     });
   } catch (e) {
     throw e;
@@ -111,10 +115,15 @@ router.post('/user/portfolios/wallets/:username', verify, (req, res) => {
   try {
     User.findOne({ username: req.params.username }).then((user) => {
       portfolio = user.portfolios.filter((e) => e.alias == req.body.alias);
-      portfolio[0].wallets.push({ alias: req.body.walletAlias, address: req.body.walletAddress });
-      user.save().then((data) => {
-        res.send(data);
-      });
+      if(portfolio[0].wallets.every(wallet => wallet.alias != req.body.walletAlias & wallet.address != req.body.walletAddress)){
+        portfolio[0].wallets.push({ alias: req.body.walletAlias, address: req.body.walletAddress });
+        user.save().then((data) => {
+          res.send(data);
+        });
+      }
+      else if(portfolio[0].wallets.every(wallet => wallet.alias != req.body.walletAlias)) res.status(200).send({error: 'Wallet alias already exist'});
+      else if(portfolio[0].wallets.every(wallet => wallet.address != req.body.walletAddress)) res.status(200).send({error: 'Wallet address already exist'});
+      else{ res.status(200).send({error:'Wallet already exist'})}
     });
   } catch (e) {
     throw e;
@@ -174,4 +183,3 @@ router.post('/login', (req, response) => {
 });
 
 module.exports = router;
-
