@@ -1,7 +1,6 @@
 
 #   P4-node-app
-
-This is a backend application for a Financial Portfolio Management Platform. The platform allows users to manage their financial portfolios and track wallets.
+This is the readme file for a backend application built using Node.js, Express, MongoDB and Mongoose designed to serve as a Financial Portfolio Tracker. This application allows users to manage and track portfolios on the ultra blockchain, including investments, nft's, and other assets.
 
 
 ## Environment Variables
@@ -15,8 +14,8 @@ To run this project, you will need to add the following environment variables
 | `TOKEN_SECRET`      | JSONWebToken secret |
 
 
-## Dependencies
-
+## Prerequisites
+To set up and run the backend app, you need to have the following installed on your system:
 - Node
 - Express
 - Mongoose
@@ -35,6 +34,11 @@ Install P4-node-app with npm
   cd my-project
 ```
     
+## Configuration
+
+Before running the application, make sure to set up the necessary configuration.
+
+- Database Configuration: Provide the connection details for your MongoDB database. If you haven't installed MongoDB yet, please refer to the official documentation for instructions. Add the MONGO_DB variable to your .env file with the URL of your MongoDB database.
 ## Project structure
 ```http
 The folder structure of this app is explained bellow
@@ -258,7 +262,22 @@ Body Parameters
 | `username`      | `string` | **Required**. User's username |
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## Authors
 
 - [@Jagger85](https://gitlab.com/Jagger85e)
 
+
+## Contact
+If you have any questions, feedback, or suggestions, please reach out to the project maintainers at jagger85.crypto@gmail.com
