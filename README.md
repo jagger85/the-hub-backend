@@ -10,7 +10,7 @@ To run this project, you will need to add the following environment variables
 | Name | Description                       |
 | :-------- | :-------------------------------- |
 | `SERVER_PORT`      | Port on which server will run |
-| `ATLAS_PASS`      | The Atlas password  |
+| `MONGO_DB`      | The Mongo database url  |
 | `TOKEN_SECRET`      | JSONWebToken secret |
 
 
