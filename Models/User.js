@@ -1,71 +1,71 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const mongoose = require('mongoose')
+const { Schema } = mongoose
 
 const wallet = new Schema({
-  alias: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-});
+    alias: {
+        type: String,
+        required: true,
+    },
+    address: {
+        type: String,
+        required: true,
+    },
+})
 
 const portfolio = new Schema({
-  alias: {
-    type: String,
-    required: true,
-  },
-  wallets: [wallet],
-});
+    alias: {
+        type: String,
+        required: true,
+    },
+    wallets: [wallet],
+})
 
 const user = new Schema({
-  username: {
-    type: String,
-    required: true,
-  },
+    username: {
+        type: String,
+        required: true,
+    },
 
-  email: {
-    type: String,
-    required: true,
-    lowercase: true,
-  },
+    email: {
+        type: String,
+        required: true,
+        lowercase: true,
+    },
 
-  password: {
-    type: String,
-    required: true,
-  },
+    password: {
+        type: String,
+        required: true,
+    },
 
-  createdAt: {
-    type: Date,
-    inmutable: true,
-    default: () => Date.now(),
-  },
+    createdAt: {
+        type: Date,
+        inmutable: true,
+        default: () => Date.now(),
+    },
 
-  currency: {
-    type: String,
-    default: 'USD',
-  },
-  preferredPortfolio: {
-    type: String,
-    default: null,
-  },
+    currency: {
+        type: String,
+        default: 'USD',
+    },
+    preferredPortfolio: {
+        type: String,
+        default: null,
+    },
 
-  portfolios: [portfolio],
+    portfolios: [portfolio],
 
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-});
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+})
 
 user.pre('find', function () {
-  this.where({ isDeleted: false });
-});
+    this.where({ isDeleted: false })
+})
 
 user.pre('findOne', function () {
-  this.where({ isDeleted: false });
-});
+    this.where({ isDeleted: false })
+})
 
-module.exports = mongoose.model('User', user);
+module.exports = mongoose.model('User', user)
